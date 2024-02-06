@@ -59,7 +59,7 @@ const deleteItem = (req, res) => {
     });
 };
 
-//like item
+// like item
 
 const likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
