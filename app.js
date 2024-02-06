@@ -8,7 +8,7 @@ app.listen(PORT, () => {
   console.log("this is working");
 });
 
-const routes = require("./routes");
+const routes = require("./routes/index");
 
 app.use(express.json());
 app.use(routes);
