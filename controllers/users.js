@@ -1,9 +1,5 @@
 const User = require("../models/user");
-const {
-  Bad_Request_Error,
-  Not_Found_Error,
-  Server_Error,
-} = require("../utils/errors");
+const { BadRequestError, ServerError } = require("../utils/errors");
 
 // get users
 
@@ -12,7 +8,7 @@ const getUsers = (req, res) => {
     .then((users) => res.send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(Server_Error).send({ message: err.message });
+      return res.status(ServerError).send({ message: err.message });
     });
 };
 
@@ -26,20 +22,16 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        res.status(Bad_Request_Error).send({ message: err.message });
+        res.status(BadRequestError).send({ message: err.message });
       } else {
-        res.status(Server_Error).send({ message: err.message });
+        res.status(ServerError).send({ message: err.message });
       }
     });
 };
 
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => {
-      const error = new Error("User Id not found");
-      err.statusCode = 404;
-      throw error;
-    })
+    .orFail()
     .then((user) => {
       res.status(200).send({ data: user });
     })
