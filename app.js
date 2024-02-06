@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", (r) => {
-  console.log("connected to DV", r);
+  console.log("connected to DB", r);
 });
 
 app.listen(PORT, () => {
