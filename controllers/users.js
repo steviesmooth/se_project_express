@@ -1,9 +1,9 @@
-const User = require("../se_project_express/models/user");
+const User = require("../models/user");
 const {
   Bad_Request_Error,
   Not_Found_Error,
   Server_Error,
-} = require("../se_project_express/utils/errors");
+} = require("../utils/errors");
 
 // get users
 

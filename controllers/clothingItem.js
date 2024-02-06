@@ -1,9 +1,9 @@
-const ClothingItem = require("../se_project_express/models/clothingItem");
+const ClothingItem = require("../models/clothingItem");
 const {
   Bad_Request_Error,
   Not_Found_Error,
   Server_Error,
-} = require("../se_project_express/utils/errors");
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   console.log(req);
