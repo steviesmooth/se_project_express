@@ -11,7 +11,7 @@ const {
 
 router.post("/", createItem);
 
-router.get("/", () => getItems);
+router.get("/", getItems);
 
 router.put("/:itemId", updateItem);
 
