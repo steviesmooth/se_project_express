@@ -35,18 +35,6 @@ const getItems = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageURL } = req.body;
-
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } })
-    .orFail()
-    .then((item) => res.status(201).send({ data: item }))
-    .catch((e) => {
-      res.status(ServerError).send({ message: "Error from updateItem", e });
-    });
-};
-
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
@@ -65,10 +53,14 @@ const likeItem = (req, res) =>
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
     { new: true },
   )
-    .orFail()
-    .then((item) => res.status(201).send({ data: item }))
-    .catch((e) => {
-      res.status(BadRequestError).send({ message: "Error from likeItem", e });
+    .orFail(() => {
+      let err = new Error("Item ID not found");
+      err.name = "NotFoundError";
+      console.log(err.name);
+    })
+    .then((item) => res.send({ data: item }))
+    .catch((err) => {
+      res.status(ServerError).send({ message: err.message });
     });
 
 const dislikeItem = (req, res) =>
@@ -86,7 +78,6 @@ const dislikeItem = (req, res) =>
 module.exports = {
   createItem,
   getItems,
-  updateItem,
   deleteItem,
   likeItem,
   dislikeItem,
