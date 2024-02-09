@@ -27,14 +27,6 @@ const createItem = (req, res) => {
     });
 };
 
-const getItems = (req, res) => {
-  ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
-    .catch((e) => {
-      res.status(ServerError).send({ message: "Error from getItems", e });
-    });
-};
-
 const updateItem = (req, res) => {
   const { itemId } = req.params;
   const { imageURL } = req.body;
@@ -44,6 +36,14 @@ const updateItem = (req, res) => {
     .then((item) => res.status(201).send({ data: item }))
     .catch((e) => {
       res.status(ServerError).send({ message: "Error from updateItem", e });
+    });
+};
+
+const getItems = (req, res) => {
+  ClothingItem.find({})
+    .then((items) => res.status(200).send(items))
+    .catch((e) => {
+      res.status(ServerError).send({ message: "Error from getItems", e });
     });
 };
 
