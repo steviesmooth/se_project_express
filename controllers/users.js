@@ -29,7 +29,7 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res, next) => {
+const getUser = (req, res) => {
   User.findById(req.params.id)
     .orFail(() => {
       let err = new Error("User ID not found");
@@ -40,7 +40,12 @@ const getUser = (req, res, next) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      next(err);
+      console.error(err);
+      if (err.name === "ValidationError") {
+        res.status(BadRequestError).send({ message: err.message });
+      } else {
+        res.status(ServerError).send({ message: err.message });
+      }
     });
 };
 
