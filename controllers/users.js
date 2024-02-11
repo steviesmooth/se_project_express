@@ -29,6 +29,8 @@ const createUser = (req, res) => {
     });
 };
 
+// Get User by ID
+
 const getUser = (req, res) => {
   User.findById(req.params.id)
     .orFail(() => {
