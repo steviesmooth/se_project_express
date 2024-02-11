@@ -53,7 +53,7 @@ const deleteItem = (req, res) => {
     .orFail()
     .then(() => res.status(204).send({}))
     .catch((e) => {
-      res.status(BadRequestError).send({ message: "Error from deleteItem", e });
+      res.status(NotFoundError).send({ message: "Error from deleteItem", e });
     });
 };
 
@@ -72,7 +72,7 @@ const likeItem = (req, res) =>
     })
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      res.status(ServerError).send({ message: err.message });
+      res.status(NotFoundError).send({ message: err.message });
     });
 
 const dislikeItem = (req, res) =>
@@ -84,7 +84,9 @@ const dislikeItem = (req, res) =>
     .orFail()
     .then((item) => res.status(201).send({ data: item }))
     .catch((e) => {
-      res.status(NotFoundError).send({ message: "Error from dislikeItem", e });
+      res
+        .status(BadRequestError)
+        .send({ message: "Error from dislikeItem", e });
     });
 
 module.exports = {
