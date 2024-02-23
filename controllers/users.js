@@ -48,11 +48,11 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(BadRequestError).send({ message: err.message });
       } else if (err.name === "NotFoundError") {
-        return res.status(404).send({ message: err.message });
+        return res.status(NotFoundError).send({ message: err.message });
       } else {
-        return res.status(500).send({ message: err.message });
+        return res.status(ServerError).send({ message: err.message });
       }
     });
 };

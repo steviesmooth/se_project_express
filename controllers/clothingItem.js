@@ -55,9 +55,9 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(400).send("Invalid ID");
+        return res.status(BadRequestError).send("Invalid ID");
       } else {
-        return res.status(500).send("Unknown server error");
+        return res.status(ServerError).send("Unknown server error");
       }
     });
 };
@@ -78,7 +78,7 @@ const likeItem = (req, res) =>
     .then((item) => res.send({ data: item }))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(BadRequestError).send({ message: err.message });
       }
     });
 
