@@ -52,8 +52,13 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
     .then(() => res.status(204).send({}))
-    .catch((e) => {
-      res.status(NotFoundError).send({ message: "Error from deleteItem", e });
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "CastError") {
+        return res.status(400).send("Invalid ID");
+      } else {
+        return res.status(500).send("Unknown server error");
+      }
     });
 };
 
@@ -72,7 +77,9 @@ const likeItem = (req, res) =>
     })
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      res.status(NotFoundError).send({ message: err.message });
+      if (err.name === "CastError") {
+        return res.status(400).send({ message: err.message });
+      }
     });
 
 const dislikeItem = (req, res) =>

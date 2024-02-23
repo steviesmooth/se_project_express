@@ -46,9 +46,14 @@ const getUser = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      console.error(
-        `Error ${err.name} with the message ${err.message} has occurred while executing the code`,
-      );
+      console.error(err);
+      if (err.name === "CastError") {
+        return res.status(400).send({ message: err.message });
+      } else if (err.name === "NotFoundError") {
+        return res.status(404).send({ message: err.message });
+      } else {
+        return res.status(500).send({ message: err.message });
+      }
     });
 };
 
