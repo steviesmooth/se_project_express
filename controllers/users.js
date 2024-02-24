@@ -1,9 +1,5 @@
 const User = require("../models/user");
-const {
-  BadRequestError,
-  ServerError,
-  NotFoundError,
-} = require("../utils/errors");
+const { BadRequestError, ServerError } = require("../utils/errors");
 
 // get users
 
@@ -12,7 +8,9 @@ const getUsers = (req, res) => {
     .then((users) => res.send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(ServerError).send({ message: err.message });
+      return res
+        .status(ServerError)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -26,9 +24,11 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        res.status(BadRequestError).send({ message: err.message });
+        res.status(BadRequestError).send({ message: "Invalid data" });
       } else {
-        res.status(ServerError).send({ message: err.message });
+        res
+          .status(ServerError)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -48,12 +48,11 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(BadRequestError).send({ message: err.message });
-      } else if (err.name === "NotFoundError") {
-        return res.status(NotFoundError).send({ message: err.message });
-      } else {
-        return res.status(ServerError).send({ message: err.message });
+        return res.status(BadRequestError).send({ message: "Invalid data" });
       }
+      return res
+        .status(ServerError)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
