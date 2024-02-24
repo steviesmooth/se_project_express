@@ -1,9 +1,27 @@
-# WTWR (What to Wear?): Back End
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
-## Running the Project
-`npm run start` — to launch the server 
 
-`npm run dev` — to launch the server with the hot reload feature
+# WTWR (What to Wear?)
+# About the project
+The first time learning back-end to connect to the front-end project of What to Wear.
 
-### Testing
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+
+
+
+
+
+## 🔗 Links
+[![Github](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/steviesmooth)
+
+
+
+## Built With
+
+
+ Node, Express, MongoDB, JavaScript
+
+
+## Features
+
+- Middlewares
+- Handling Errors and status codes
+- Schema 
+
