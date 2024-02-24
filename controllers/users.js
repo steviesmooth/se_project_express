@@ -24,12 +24,11 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        res.status(BadRequestError).send({ message: "Invalid data" });
-      } else {
-        res
-          .status(ServerError)
-          .send({ message: "An error has occurred on the server." });
+        return res.status(BadRequestError).send({ message: "Invalid data" });
       }
+      return res
+        .status(ServerError)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -37,11 +36,7 @@ const createUser = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.id)
-    .orFail(() => {
-      const err = new Error("User ID not found");
-      err.name = "NotFoundError";
-      throw err;
-    })
+    .orFail()
     .then((user) => {
       res.status(200).send({ data: user });
     })
