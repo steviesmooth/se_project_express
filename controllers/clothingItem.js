@@ -1,5 +1,9 @@
 const ClothingItem = require("../models/clothingItem");
-const { BadRequestError, ServerError } = require("../utils/errors");
+const {
+  BadRequestError,
+  ServerError,
+  NotFoundError,
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   console.log(req);
@@ -16,7 +20,7 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        res.status(BadRequestError).send({ message: "Invalid data" });
+        return res.status(BadRequestError).send({ message: "Invalid data" });
       }
       return res
         .status(ServerError)
@@ -45,6 +49,8 @@ const deleteItem = (req, res) => {
       console.error(err);
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid ID" });
+      } if (err.name === "DocumentNotFoundError") {
+        return res.status(NotFoundError).send({ message: "Not Found Error" });
       }
       return res
         .status(ServerError)
@@ -66,7 +72,9 @@ const likeItem = (req, res) =>
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
       }
-
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NotFoundError).send({ message: "Not Found Error" });
+      }
       return res
         .status(ServerError)
         .send({ message: "An error has occurred on the server." });
@@ -83,6 +91,9 @@ const dislikeItem = (req, res) =>
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NotFoundError).send({ message: "Not Found Error" });
       }
       return res
         .status(ServerError)

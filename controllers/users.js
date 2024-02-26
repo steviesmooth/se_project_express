@@ -1,5 +1,9 @@
 const User = require("../models/user");
-const { BadRequestError, ServerError } = require("../utils/errors");
+const {
+  BadRequestError,
+  ServerError,
+  NotFoundError,
+} = require("../utils/errors");
 
 // get users
 
@@ -44,6 +48,9 @@ const getUser = (req, res) => {
       console.error(err);
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NotFoundError).send({ message: "Not Found Error" });
       }
       return res
         .status(ServerError)
