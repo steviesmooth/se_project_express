@@ -40,16 +40,25 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const { userId } = req.user._id;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() =>
-      res.status(200).send({ message: "Item was successfully deleted" }),
-    )
+    .then(() => {
+      if (itemId === userId) {
+        return res
+          .status(200)
+          .send({ message: "Item was successfully deleted" });
+      }
+      return res.send(403, {
+        message: "Item can't be deleted",
+      });
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid ID" });
-      } if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res.status(NotFoundError).send({ message: "Not Found Error" });
       }
       return res
