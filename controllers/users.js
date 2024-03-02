@@ -6,6 +6,7 @@ const {
   ServerError,
   NotFoundError,
   UnauthorizedError,
+  ConflictError,
 } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
@@ -15,32 +16,35 @@ const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   console.log(req.body);
 
-  User.findOne({ email }).then((user) => {
-    if (user) {
-      return res.send(11000, {
-        message: "Email already exists",
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        return res
+          .status(ConflictError)
+          .send({ message: "Email is already in use" });
+      }
+
+      return bcrypt.hash(password, 10).then((hash) => {
+        User.create({ name, avatar, email, password: hash })
+          .then((user) =>
+            res.status(201).send({
+              name: user.name,
+              avatar: user.avatar,
+              email: user.email,
+            }),
+          )
+          .catch((err) => {
+            console.error(err);
+            if (err.name === "ValidationError") {
+              return res
+                .status(BadRequestError)
+                .send({ message: "Invalid data" });
+            }
+            next(err);
+          });
       });
-    }
-    return bcrypt.hash(password, 10).then((hash) => {
-      User.create({ name, avatar, email, password: hash })
-        .then((user) =>
-          res.status(201).send({
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-          }),
-        )
-        .catch((err) => {
-          console.error(err);
-          if (err.name === "ValidationError") {
-            return res
-              .status(BadRequestError)
-              .send({ message: "Invalid data" });
-          }
-          next(err);
-        });
-    });
-  });
+    })
+    .catch(next);
 };
 
 // GET CURRENT USER
