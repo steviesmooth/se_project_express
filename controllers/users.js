@@ -13,6 +13,7 @@ const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
+  console.log(req.body);
 
   User.findOne({ email }).then((user) => {
     if (user) {

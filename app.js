@@ -12,12 +12,11 @@ app.listen(PORT, () => {
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", (r) => {
   console.log("connected to DB", r);
 });
-
+app.use(cors());
+app.use(express.json());
 const routes = require("./routes/index");
 
 app.post("/signin", login);
 app.post("/signup", createUser);
 
-app.use(cors());
-app.use(express.json());
 app.use(routes);
