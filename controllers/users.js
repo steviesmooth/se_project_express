@@ -1,9 +1,13 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const {
   BadRequestError,
   ServerError,
   NotFoundError,
+  UnauthorizedError,
 } = require("../utils/errors");
+const { JWT_SECRET } = require("../utils/config");
 
 // get users
 
@@ -21,19 +25,29 @@ const getUsers = (req, res) => {
 // create user
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res.status(BadRequestError).send({ message: "Invalid data" });
-      }
-      return res
-        .status(ServerError)
-        .send({ message: "An error has occurred on the server." });
+  const { name, avatar, email, password } = req.body;
+  let errors = [];
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      errors.push({ message: "Email is already in use" });
+      res.render("register", { errors });
+    }
+    return bcrypt.hash(password, 10).then((hash) => {
+      User.create({ name, avatar, email, password: hash })
+        .then((user) => res.status(201).send(user))
+        .catch((err) => {
+          console.error(err);
+          if (err.name === "ValidationError") {
+            return res
+              .status(BadRequestError)
+              .send({ message: "Invalid data" });
+          }
+          return res
+            .status(ServerError)
+            .send({ message: "An error has occurred on the server." });
+        });
     });
+  });
 };
 
 // Get User by ID
@@ -58,4 +72,21 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+//Login
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
+    })
+    .catch(() => {
+      res
+        .status(UnauthorizedError)
+        .send({ message: "Incorrect email or password" });
+    });
+};
+module.exports = { getUsers, createUser, getUser, login };
