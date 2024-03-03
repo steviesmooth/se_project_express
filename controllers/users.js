@@ -14,14 +14,14 @@ const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
-  console.log(req.body);
 
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        return res
+        const error = res
           .status(ConflictError)
           .send({ message: "Email is already in use" });
+        return next(error);
       }
 
       return bcrypt.hash(password, 10).then((hash) => {
