@@ -17,6 +17,6 @@ module.exports = (req, res, next) => {
     console.log(err);
     return res.status(UnauthorizedError).send({ message: "Unauthorized" });
   }
-  req.user = payload;
+  req.user_id = payload;
   next();
 };

@@ -15,12 +15,18 @@ const { JWT_SECRET } = require("../utils/config");
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
+  if (!password || !email) {
+    return res
+      .status(BadRequestError)
+      .send({ message: "email or password not present" });
+  }
+
   User.findOne({ email })
     .then((user) => {
       if (user) {
         const error = res
           .status(ConflictError)
-          .send({ message: "Email is already in use" });
+          .send({ message: "Email already exists" });
         return next(error);
       }
 
@@ -98,12 +104,14 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      res.status(200).send({ user, token });
     })
-    .catch(() => {
-      return res
-        .status(UnauthorizedError)
-        .send({ message: "Incorrect email or password" });
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(BadRequestError).send({ message: "Invalid data" });
+      }
+
+      return res.status(UnauthorizedError).send({ message: "unauthorized" });
     });
 };
 module.exports = { createUser, login, getCurrentUser, updateUser };
