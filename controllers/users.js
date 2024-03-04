@@ -104,7 +104,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.status(200).send({ user, token });
+      return res.status(200).send({ user, token });
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {

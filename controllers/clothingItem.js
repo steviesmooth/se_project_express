@@ -76,7 +76,7 @@ const likeItem = (req, res) =>
     { new: true },
   )
     .orFail()
-    .then((item) => res.send({ data: item }))
+    .then((item) => res.status(201).send({ data: item }))
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
