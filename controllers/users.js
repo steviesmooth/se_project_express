@@ -107,11 +107,10 @@ const login = (req, res) => {
       return res.status(200).send({ user, token });
     })
     .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(BadRequestError).send({ message: "Invalid data" });
+      if (err.name === "InvalidSignature") {
+        return res.status(UnauthorizedError).send({ message: "unathorized" });
       }
-
-      return res.status(UnauthorizedError).send({ message: "unauthorized" });
+      return res.status(BadRequestError).send({ message: "Invalid data" });
     });
 };
 module.exports = { createUser, login, getCurrentUser, updateUser };

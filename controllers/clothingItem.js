@@ -96,7 +96,7 @@ const dislikeItem = (req, res) =>
     { new: true },
   )
     .orFail()
-    .then((item) => res.status(201).send({ data: item }))
+    .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
