@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { UnauthorizedError, InvalidSignature } = require("../utils/errors");
+const { UnauthorizedError, ForbiddenError } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
 module.exports = (req, res, next) => {
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res
-      .status(InvalidSignature)
+      .status(ForbiddenError)
       .send({ auth: false, message: "Access Forbidden" });
   }
   req.user = payload;

@@ -3,7 +3,7 @@ const {
   BadRequestError,
   ServerError,
   NotFoundError,
-  InvalidSignature,
+  ForbiddenError,
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -50,7 +50,7 @@ const deleteItem = (req, res) => {
           .status(200)
           .send({ message: "Item was successfully deleted" });
       }
-      return res.send(InvalidSignature, {
+      return res.send(ForbiddenError, {
         message: "Item can't be deleted",
       });
     })
