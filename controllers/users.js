@@ -21,7 +21,7 @@ const createUser = (req, res, next) => {
       .send({ message: "email or password not present" });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((user) => {
       if (user) {
         const error = res
