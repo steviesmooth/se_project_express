@@ -32,11 +32,11 @@ const createUser = (req, res, next) => {
 
       return bcrypt.hash(password, 10).then((hash) => {
         User.create({ name, avatar, email, password: hash })
-          .then((user) =>
+          .then((data) =>
             res.status(201).send({
-              name: user.name,
-              avatar: user.avatar,
-              email: user.email,
+              name: data.name,
+              avatar: data.avatar,
+              email: data.email,
             }),
           )
           .catch((err) => {
@@ -46,7 +46,7 @@ const createUser = (req, res, next) => {
                 .status(BadRequestError)
                 .send({ message: "Invalid data" });
             }
-            next(err);
+            return next(err);
           });
       });
     })
@@ -59,7 +59,7 @@ const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
       const error = new Error("User Id not found");
-      err.statusCode = NotFoundError;
+      error.statusCode = NotFoundError;
       throw error;
     })
     .then((user) => {
