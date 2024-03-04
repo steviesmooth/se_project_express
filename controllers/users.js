@@ -76,7 +76,7 @@ const updateUser = (req, res) => {
   const { name, avatar } = req.body;
   User.findOneAndUpdate(
     { _id: req.user._id },
-    { $set: { name: name, avatar: avatar } },
+    { $set: { name, avatar } },
     { new: true, runValidators: true },
   )
     .orFail()
