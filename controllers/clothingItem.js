@@ -41,11 +41,11 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  const { userId } = req.user._id;
+
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => {
-      if (itemId === userId) {
+    .then((item) => {
+      if (item.owner === req.user._id) {
         return res
           .status(200)
           .send({ message: "Item was successfully deleted" });
