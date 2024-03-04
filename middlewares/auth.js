@@ -21,5 +21,5 @@ module.exports = (req, res, next) => {
       .send({ auth: false, message: "Access Forbidden" });
   }
   req.user = payload;
-  next();
+  return next();
 };

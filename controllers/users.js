@@ -95,7 +95,7 @@ const updateUser = (req, res) => {
     });
 };
 
-//Login
+// Login
 const login = (req, res) => {
   const { email, password } = req.body;
 
