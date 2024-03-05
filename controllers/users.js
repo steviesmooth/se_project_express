@@ -118,7 +118,7 @@ const login = (req, res) => {
       return res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "AssertionError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
       }
       if (err.message === "Incorrect email or password") {
