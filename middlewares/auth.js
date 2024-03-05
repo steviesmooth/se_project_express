@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res
-      .status(ForbiddenError)
+      .status(UnauthorizedError)
       .send({ auth: false, message: "Access Forbidden" });
   }
   req.user = payload;

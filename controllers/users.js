@@ -12,7 +12,7 @@ const { JWT_SECRET } = require("../utils/config");
 
 // create user
 
-const createUser = (req, res, next) => {
+const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   if (!password || !email) {
@@ -24,10 +24,9 @@ const createUser = (req, res, next) => {
   return User.findOne({ email })
     .then((user) => {
       if (user) {
-        const error = res
+        return res
           .status(ConflictError)
           .send({ message: "Email already exists" });
-        return next(error);
       }
 
       return bcrypt.hash(password, 10).then((hash) => {
@@ -46,11 +45,20 @@ const createUser = (req, res, next) => {
                 .status(BadRequestError)
                 .send({ message: "Invalid data" });
             }
-            return next(err);
+            return res
+              .status(ServerError)
+              .send({ message: "An error occured on the server" });
           });
       });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "DocumentNotFound") {
+        return res.status(NotFoundError).send({ message: "Not found error" });
+      }
+      return res
+        .status(ServerError)
+        .send({ message: "An error occured on the server" });
+    });
 };
 
 // GET CURRENT USER
@@ -83,6 +91,9 @@ const updateUser = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       console.error(err);
+      if (err.name === "ValidationError") {
+        return res.status(BadRequestError).send({ message: "Invalid data" });
+      }
       if (err.name === "CastError") {
         return res.status(BadRequestError).send({ message: "Invalid data" });
       }
@@ -104,13 +115,15 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.status(200).send({ user, token });
+      return res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.name === "InvalidSignature") {
-        return res.status(UnauthorizedError).send({ message: "unathorized" });
+      if (err.message === "Incorrect email or password") {
+        return res.status(UnauthorizedError).send({ message: "Unathorized" });
       }
-      return res.status(BadRequestError).send({ message: "Invalid data" });
+      return res
+        .status(ServerError)
+        .send({ message: "An error occured on the server" });
     });
 };
 module.exports = { createUser, login, getCurrentUser, updateUser };
