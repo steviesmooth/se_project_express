@@ -109,7 +109,11 @@ const updateUser = (req, res) => {
 // Login
 const login = (req, res) => {
   const { email, password } = req.body;
-
+  if (!password || !email) {
+    return res
+      .status(BadRequestError)
+      .send({ message: "email or password not present" });
+  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -118,9 +122,6 @@ const login = (req, res) => {
       return res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.name === "AssertionError") {
-        return res.status(BadRequestError).send({ message: "Invalid data" });
-      }
       if (err.message === "Incorrect email or password") {
         return res.status(UnauthorizedError).send({ message: "Unathorized" });
       }
