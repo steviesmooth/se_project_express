@@ -67,14 +67,14 @@ const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail(() => {
       const error = new Error("User Id not found");
-      error.statusCode = NotFoundError;
+      error.name = "NotFoundError";
       throw error;
     })
     .then((user) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.message === "User Id not found") {
+      if (err.name === "NotFoundError") {
         return res.status(NotFoundError).send({ message: "Not found error" });
       }
       return res
