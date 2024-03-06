@@ -63,7 +63,7 @@ const createUser = (req, res) => {
 
 // GET CURRENT USER
 
-const getCurrentUser = (req, res, next) => {
+const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail(() => {
       const error = new Error("User Id not found");
@@ -74,7 +74,12 @@ const getCurrentUser = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      next(err);
+      if (err.message === "User Id not found") {
+        return res.status(NotFoundError).send({ message: "Not found error" });
+      }
+      return res
+        .status(ServerError)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
