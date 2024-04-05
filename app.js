@@ -1,8 +1,9 @@
 const express = require("express");
-
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 const cors = require("cors");
-
+const errorHandler = require("./middlewares/error-handling");
 const app = express();
+const { errors } = require("celebrate");
 const { PORT = 3001 } = process.env;
 
 const mongoose = require("mongoose");
@@ -24,4 +25,10 @@ app.use(express.json());
 app.post("/signin", login);
 app.post("/signup", createUser);
 
+app.use(requestLogger);
 app.use(routes);
+
+app.use(errorLogger);
+
+app.use(errors());
+app.use(errorHandler);
