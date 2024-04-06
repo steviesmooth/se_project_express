@@ -9,7 +9,7 @@ The first time learning back-end to connect to the front-end project of What to 
 
 
 ## 🔗 Links
-[![Github](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/steviesmooth)
+[![Github](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/steviesmooth) Frontend: (https://stevennarak.strangled.net) Backend: (https://api.stevennarak.strangled.net)
 
 
 
@@ -23,5 +23,6 @@ The first time learning back-end to connect to the front-end project of What to 
 
 - Middlewares
 - Handling Errors and status codes
-- Schema 
+- Schema
+
 
