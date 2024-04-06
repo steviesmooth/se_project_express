@@ -6,7 +6,7 @@ const ConflictError = require("../errors/conflict");
 const BadRequestError = require("../errors/bad-request");
 const NotFoundError = require("../errors/not-found");
 const UnauthorizedError = require("../errors/unauthorized");
-const { JWT_SECRET } = require("../utils/config");
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 // create user
 
@@ -82,9 +82,13 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
+        {
+          expiresIn: "7d",
+        },
+      );
       return res.status(200).send({ token });
     })
     .catch(() => {
