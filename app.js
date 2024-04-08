@@ -1,13 +1,23 @@
 require("dotenv").config();
 const express = require("express");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
+const mongoose = require("mongoose");
+
 const cors = require("cors");
-const errorHandler = require("./middlewares/error-handling");
+
 const app = express();
+
 const { errors } = require("celebrate");
+
 const { PORT = 3001 } = process.env;
 
-const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/error-handling");
+
+const { requestLogger, errorLogger } = require("./middlewares/logger");
+
+const {
+  validateUserLogin,
+  validateUserBody,
+} = require("./middlewares/validation");
 
 const { login, createUser } = require("./controllers/users");
 
@@ -23,6 +33,7 @@ app.use(cors());
 const routes = require("./routes/index");
 
 app.use(express.json());
+app.use(requestLogger);
 
 app.get("/crash-test", () => {
   setTimeout(() => {
@@ -30,10 +41,9 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-app.post("/signin", login);
-app.post("/signup", createUser);
+app.post("/signin", validateUserLogin, login);
+app.post("/signup", validateUserBody, createUser);
 
-app.use(requestLogger);
 app.use(routes);
 
 app.use(errorLogger);

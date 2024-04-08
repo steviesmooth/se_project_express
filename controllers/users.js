@@ -6,6 +6,7 @@ const ConflictError = require("../errors/conflict");
 const BadRequestError = require("../errors/bad-request");
 const NotFoundError = require("../errors/not-found");
 const UnauthorizedError = require("../errors/unauthorized");
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 // create user
